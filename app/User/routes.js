@@ -16,6 +16,7 @@ router.post(
       min: 6,
     }),
     check("address", "address is required").not().isEmpty(),
+    check("userType", "user type is required").not().isEmpty(),
   ],
   userController.registerUser
 ); //----------------------------------------------------------------------------------> Register User ---> return (x-auth-token)

@@ -15,23 +15,27 @@ exports.registerUser = async (req, res) => {
     if (!errors.isEmpty()) {
       res.status(400).json({
         error: errors.array(),
+        statusCode: 2,
       });
     } else {
-      const { name, email, password, contactNumber, address } = req.body;
+      const { fullName, email, password, contactNumber, address, userType } =
+        req.body;
       try {
         let user = await UserModel.findOne({ email });
         if (user) {
-          res.status(400).json({
+          res.status(200).json({
             status: true,
             data: "User already exists",
+            statusCode: 1,
           });
         } else {
           user = new UserModel({
-            name,
+            fullName,
             email,
             password,
             contactNumber,
             address,
+            userType,
           });
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(password, salt);
@@ -41,31 +45,39 @@ exports.registerUser = async (req, res) => {
               id: user.id,
             },
           };
+
+          res.status(200).json({
+            status: true,
+            data: "User Added Successfully",
+            statusCode: 0,
+          });
+
           //  Token Valid for 1hr
-          jwt.sign(
-            payload,
-            config.JWT_SECRET,
-            {
-              expiresIn: 3600,
-            },
-            (err, token) => {
-              if (err) {
-                throw err;
-              } else {
-                res.status(200).json({
-                  status: true,
-                  data: "User Added Successfully",
-                  token: token,
-                });
-              }
-            }
-          );
+          // jwt.sign(
+          //   payload,
+          //   config.JWT_SECRET,
+          //   {
+          //     expiresIn: 3600,
+          //   },
+          //   (err, token) => {
+          //     if (err) {
+          //       throw err;
+          //     } else {
+          //       res.status(200).json({
+          //         status: true,
+          //         data: "User Added Successfully",
+          //         statusCode: 0,
+          //       });
+          //     }
+          //   }
+          // );
         }
       } catch (err) {
         console.log(err);
         res.status(500).json({
           status: false,
           error: err,
+          statusCode: 2,
         });
       }
     }
@@ -87,8 +99,11 @@ exports.userLogin = async (req, res) => {
     //console.log(`errors : ${JSON.stringify(errors)}`);
     //res.send(errors);
     if (!errors.isEmpty()) {
-      res.status(400).json({
+      res.status(200).json({
         error: errors.array(),
+        status: true,
+        data: "Invalid credientials",
+        statusCode: 1,
       });
     } else {
       const { email, password } = req.body;
@@ -97,18 +112,20 @@ exports.userLogin = async (req, res) => {
         let user = await UserModel.findOne({ email });
 
         if (!user) {
-          return res.status(400).json({
+          return res.status(200).json({
             status: true,
             data: "Invalid credientials",
+            statusCode: 1,
           });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-          return res.status(400).json({
+          return res.status(200).json({
             status: true,
             data: "Invalid credientials",
+            statusCode: 1,
           });
         }
 
@@ -130,8 +147,9 @@ exports.userLogin = async (req, res) => {
             } else {
               res.status(200).json({
                 status: true,
-                data: "Login successful",
+                data: user,
                 token: token,
+                statusCode: 0,
               });
             }
           }
@@ -159,11 +177,16 @@ exports.userLogin = async (req, res) => {
 exports.loggedInUser = async (req, res) => {
   try {
     const user = await UserModel.findById(req.user.id).select("-password");
-    res.status(200).json(user);
+    res.status(200).json({
+      status: true,
+      statusCode: 0,
+      user,
+    });
   } catch (err) {
-    res.status(500).json({
+    res.status(200).json({
       status: false,
       data: "Token expired or invalid",
+      statusCode: 1,
     });
   }
 };
