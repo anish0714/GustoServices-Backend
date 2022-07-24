@@ -27,11 +27,7 @@ exports.addService = async (req, res) => {
     const service = new ServiceModel({
       name,
       categoryId,
-      serviceImage: {
-        // data: fs.readFileSync(`./images/Category/${filename}`),
-        data: fs.readFileSync(destination + filename),
-        contentType: mimetype,
-      },
+      serviceImage: `images/Service/${filename}`,
     });
 
     service.save();
@@ -101,19 +97,19 @@ exports.fetchAllServices = async (req, res) => {
 //  @type GET
 //  desc get service by id
 exports.fetchServiceById = async (req, res) => {
-    try {
-      const { id } = req.params;
-      let service = await ServiceModel.findById(id);
-      return res.status(200).json({
-        status: true,
-        statusCode: 0,
-        data: service,
-      });
-    } catch (err) {
-      return res.status(500).json({
-        status: false,
-        statusCode: 1,
-        data: "Server error",
-      });
-    }
-  };
+  try {
+    const { id } = req.params;
+    let service = await ServiceModel.findById(id);
+    return res.status(200).json({
+      status: true,
+      statusCode: 0,
+      data: service,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: false,
+      statusCode: 1,
+      data: "Server error",
+    });
+  }
+};

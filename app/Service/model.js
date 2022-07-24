@@ -7,8 +7,7 @@ const serviceSchema = mongoose.Schema({
     required: true,
   },
   serviceImage: {
-    data: Buffer,
-    contentType: String,
+    type: String,
   },
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
