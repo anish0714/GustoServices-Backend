@@ -20,11 +20,7 @@ exports.addCategory = async (req, res) => {
 
     const category = new CategoryModel({
       name,
-      categoryImage: {
-        // data: fs.readFileSync(`./images/Category/${filename}`),
-        data: fs.readFileSync(destination + filename),
-        contentType: mimetype,
-      },
+      categoryImage: `images/Category/${filename}`,
     });
     category.save();
     return res.status(200).json({

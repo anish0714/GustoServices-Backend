@@ -7,7 +7,9 @@ const app = express();
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
-
+app.use("/images/Category", express.static("images/Category"));
+app.use("/images/Profile", express.static("images/Profile"));
+app.use("/images/Service", express.static("images/Service"));
 // Connect Database
 require("./config/db")(app);
 
