@@ -19,11 +19,25 @@ const userSchema = mongoose.Schema({
   },
   address: {
     type: String,
-    required: true,
+  },
+  bio: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  organizationName: {
+    type: String,
+  },
+  postalCode: {
+    type: String,
   },
   userType: {
     type: String,
     required: true,
+  },
+  profilePic: {
+    type: String,
   },
 });
 

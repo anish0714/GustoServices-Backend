@@ -18,8 +18,7 @@ exports.registerUser = async (req, res) => {
         statusCode: 2,
       });
     } else {
-      const { fullName, email, password, contactNumber, address, userType } =
-        req.body;
+      const { email, password } = req.body;
       try {
         let user = await UserModel.findOne({ email });
         if (user) {
@@ -29,22 +28,15 @@ exports.registerUser = async (req, res) => {
             statusCode: 1,
           });
         } else {
-          user = new UserModel({
-            fullName,
-            email,
-            password,
-            contactNumber,
-            address,
-            userType,
-          });
+          user = new UserModel(req.body);
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(password, salt);
           await user.save();
-          const payload = {
-            user: {
-              id: user.id,
-            },
-          };
+          // const payload = {
+          //   user: {
+          //     id: user.id,
+          //   },
+          // };
 
           res.status(200).json({
             status: true,
@@ -189,4 +181,42 @@ exports.loggedInUser = async (req, res) => {
       statusCode: 1,
     });
   }
+};
+
+exports.updateProfilePic = async (req, res) => {
+  try {
+    // const { id } = req.params;
+    const { userId } = req.body;
+    const { filename, destination, mimetype } = req.file;
+    console.log("req.file", req.file);
+    await UserModel.findOneAndUpdate(
+      { userId },
+      { profilePic: `images/Profile/${filename}` }
+    );
+    const user = await UserModel.findById(userId);
+    return res.status(200).json({
+      status: true,
+      statusCode: 0,
+      userData: user,
+    });
+  } catch (err) {
+    res.status(200).json({
+      status: false,
+      data: "ERROR WHILE UPDATING IMAGE",
+      statusCode: 1,
+    });
+  }
+};
+
+exports.updateUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    await UserModel.findOneAndUpdate({ userId }, req.body);
+    const user = await UserModel.findById(userId);
+    return res.status(200).json({
+      status: true,
+      statusCode: 0,
+      userData: user,
+    });
+  } catch (err) {}
 };

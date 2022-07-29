@@ -3,19 +3,19 @@ const { body, validationResult } = require("express-validator");
 const check = require("express-validator").check;
 const auth = require("../../middleware/auth");
 const userController = require("./controller");
+const upload = require("../../middleware/upload");
+
 router.post(
   "/register",
   [
     check("fullName", "Full Name is required").not().isEmpty(),
     check("contactNumber", "contact number is required").not().isEmpty(),
-    check("email", "Please include a valid email").isEmail(),
     check(
       "password",
       "Please enter a password with 6 or more character"
     ).isLength({
       min: 6,
     }),
-    check("address", "address is required").not().isEmpty(),
     check("userType", "user type is required").not().isEmpty(),
   ],
   userController.registerUser
@@ -31,5 +31,12 @@ router.post(
 ); //-----------------------------------------------------------> User Login ---> return (x-auth-token)
 
 router.post("/loggedin", auth, userController.loggedInUser); //-----> Check logged in user by passing (x-auth-token)
+router.post(
+  "/updateProfilePic",
+  upload.single("profilePic"),
+  userController.updateProfilePic
+);
+
+router.put("/updateUserProfile/:userId", userController.updateUserProfile);
 
 module.exports = router;
