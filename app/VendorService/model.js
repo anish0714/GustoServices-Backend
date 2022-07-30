@@ -1,24 +1,42 @@
 const mongoose = require("mongoose");
-const Schedule = require("../Schedule/model");
-const Service = require("../Service/model");
-const User = require("../User/model");
+
+STATUS = {
+  AVAILABLE: "available",
+  UNAVAILABLE: "unavailable",
+  BOOKED: "booked",
+};
 
 const vendorServiceSchema = mongoose.Schema({
-  
-  scheduleId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Schedule,
-  },
+  schedule: [
+    {
+      date: {
+        type: Date,
+      },
+      timings: [
+        {
+          time: { type: String },
+          status: {
+            type: String,
+            enum: [STATUS],
+          },
+        },
+      ],
+    },
+  ],
   serviceId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Service,
+    ref: "Service",
   },
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: User,
+    ref: "User",
+  },
+  feedbackId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Feedback",
   },
   rate: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
