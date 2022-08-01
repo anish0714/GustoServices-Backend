@@ -7,6 +7,9 @@ STATUS = {
 };
 
 const vendorServiceSchema = mongoose.Schema({
+  serviceName: {
+    type: String,
+  },
   schedule: [
     {
       date: {
@@ -14,6 +17,9 @@ const vendorServiceSchema = mongoose.Schema({
       },
       timings: [
         {
+          id: {
+            type: String,
+          },
           time: { type: String },
           status: {
             type: String,

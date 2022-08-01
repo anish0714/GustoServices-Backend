@@ -184,39 +184,60 @@ exports.loggedInUser = async (req, res) => {
 };
 
 exports.updateProfilePic = async (req, res) => {
-  try {
-    // const { id } = req.params;
-    const { userId } = req.body;
-    const { filename, destination, mimetype } = req.file;
-    console.log("req.file", req.file);
-    await UserModel.findOneAndUpdate(
-      { userId },
-      { profilePic: `images/Profile/${filename}` }
-    );
-    const user = await UserModel.findById(userId);
-    return res.status(200).json({
-      status: true,
-      statusCode: 0,
-      userData: user,
+  // const { id } = req.params;
+  const { userId } = req.body;
+  console.log("userId", userId);
+  const { filename } = req.file;
+  const payload = {
+    profilePic: `images/Profile/${filename}`,
+  };
+  // console.log("req.file", req.file);
+  UserModel.findByIdAndUpdate(userId, payload, { new: true })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: `User not found with id: ${userId}`,
+        });
+      }
+      console.log("USER", user);
+      return res.status(200).json({
+        status: true,
+        statusCode: 0,
+        userData: user,
+      });
+    })
+    .catch((err) => {
+      res.status(200).json({
+        status: false,
+        data: "ERROR WHILE UPDATING IMAGE",
+        statusCode: 1,
+      });
     });
-  } catch (err) {
-    res.status(200).json({
-      status: false,
-      data: "ERROR WHILE UPDATING IMAGE",
-      statusCode: 1,
-    });
-  }
 };
 
 exports.updateUserProfile = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    await UserModel.findOneAndUpdate({ userId }, req.body);
-    const user = await UserModel.findById(userId);
-    return res.status(200).json({
-      status: true,
-      statusCode: 0,
-      userData: user,
+  const { userId } = req.params;
+  console.log("req.body", req.body);
+  console.log("userId", userId);
+  UserModel.findByIdAndUpdate(userId, req.body, { new: true })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: `User not found with id: ${userId}`,
+        });
+      }
+      console.log("USER", user);
+      return res.status(200).json({
+        status: true,
+        statusCode: 0,
+        userData: user,
+      });
+    })
+    .catch((err) => {
+      res.status(200).json({
+        status: false,
+        data: "ERROR WHILE UPDATING PROFILE",
+        statusCode: 1,
+      });
     });
-  } catch (err) {}
 };

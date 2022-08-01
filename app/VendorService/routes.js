@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const controller = require("./controller");
 
-router.get("/", controller.getVendorServices);
+router.post("/", controller.getVendorServices);
 router.get("/:vendorServiceId", controller.getVendorServiceById);
 
 router.post("/add", controller.addOrUpdateService);
