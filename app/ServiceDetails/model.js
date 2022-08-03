@@ -9,10 +9,6 @@ const serviceDetailsSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  feedbackId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Feedback",
-  },
   selectedDate: {
     type: Date,
     required: true,

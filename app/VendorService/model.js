@@ -37,10 +37,6 @@ const vendorServiceSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  feedbackId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Feedback",
-  },
   rate: {
     type: Number,
     required: true,

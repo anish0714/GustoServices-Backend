@@ -13,15 +13,19 @@ const feedbackSchema = mongoose.Schema({
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: User,
+    ref: "User",
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
+  },
+  vendorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   serviceId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Service,
+    ref: "Service",
   },
 });
 
