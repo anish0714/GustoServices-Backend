@@ -3,6 +3,7 @@ const controller = require("./controller");
 const upload = require("../../middleware/upload");
 
 router.get("/", controller.fetchAllServices);
+router.get("/search/:searchKeyword", controller.getServiceBySearch);
 router.get("/vendor/:serviceId", controller.getVendorsByService);
 router.get("/:id", controller.fetchServiceById);
 

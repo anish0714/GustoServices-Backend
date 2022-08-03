@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const Service = require("../Service/model");
-const User = require("../User/model");
 
 const feedbackSchema = mongoose.Schema({
   rating: {

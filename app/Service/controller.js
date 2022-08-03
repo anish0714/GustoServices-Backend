@@ -135,3 +135,30 @@ exports.getVendorsByService = async (req, res) => {
     });
   }
 };
+
+exports.getServiceBySearch = async (req, res) => {
+  try {
+    const { searchKeyword } = req.params;
+    let services = await ServiceModel.find({
+      name: { $regex: searchKeyword, $options: "i" },
+    });
+    const ids = services.map((service) => {
+      return service._id;
+    });
+    let vendorService = await VendorService.find({
+      serviceId: { $in: ids },
+    }).populate("vendorId", "fullName email organizationName");
+    return res.status(200).json({
+      status: true,
+      statusCode: 0,
+      data: vendorService,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      status: false,
+      statusCode: 1,
+      data: "Server error",
+    });
+  }
+};
