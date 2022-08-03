@@ -1,6 +1,6 @@
 const CategoryModel = require("./model");
 const ServiceModel = require("../Service/model");
-const fs = require("fs");
+
 //  @type POST
 //  @desc add a new Category
 exports.addCategory = async (req, res) => {
@@ -93,11 +93,11 @@ exports.fetchAllCategories = async (req, res) => {
 exports.fetchCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
-    let categories = await CategoryModel.findById(id);
+    let category = await CategoryModel.findById(id);
     return res.status(200).json({
       status: true,
       statusCode: 0,
-      data: categories,
+      data: category,
     });
   } catch (err) {
     return res.status(500).json({

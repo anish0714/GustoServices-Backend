@@ -1,6 +1,6 @@
 const ServiceModel = require("./model");
 const CategoryModel = require("../Category/model");
-const fs = require("fs");
+const VendorService = require("../VendorService/model");
 
 exports.addService = async (req, res) => {
   try {
@@ -107,6 +107,28 @@ exports.fetchServiceById = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
+      status: false,
+      statusCode: 1,
+      data: "Server error",
+    });
+  }
+};
+
+exports.getVendorsByService = async (req, res) => {
+  try {
+    const { serviceId } = req.params;
+    let service = await VendorService.find({ serviceId }).populate(
+      "vendorId",
+      "fullName email organizationName"
+    );
+    return res.status(200).json({
+      status: true,
+      statusCode: 0,
+      data: service,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
       status: false,
       statusCode: 1,
       data: "Server error",
