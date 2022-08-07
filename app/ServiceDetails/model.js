@@ -9,6 +9,11 @@ const serviceDetailsSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  status: {
+    type: String,
+    required: true,
+    default: "open",
+  },
   selectedDate: {
     type: Date,
     required: true,
