@@ -41,6 +41,25 @@ const vendorServiceSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  organizationName: {
+    type: String,
+    required: true,
+  },
+
+  bio: {
+    type: String,
+    required: true,
+  },
+
+  location: {
+    type: String,
+    required: true,
+  },
+  serviceImage: {
+    type: String,
+    required: true,
+  },
 });
 
 const VendorService = mongoose.model("VendorService", vendorServiceSchema);

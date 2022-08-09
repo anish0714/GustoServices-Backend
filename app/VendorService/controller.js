@@ -5,6 +5,10 @@ const mongoose = require("mongoose");
 
 exports.addOrUpdateService = async (req, res) => {
   // check if the service exists
+  console.log(req.body);
+  // const { filename, destination, mimetype } = req.file;
+  // console.log(destination + filename);
+
   Service.findById(req.body.serviceId, (error, service) => {
     // service is added to the system
     if (service != null) {
