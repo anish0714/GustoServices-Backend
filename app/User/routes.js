@@ -39,4 +39,12 @@ router.post(
 
 router.put("/updateUserProfile/:userId", userController.updateUserProfile);
 
+router.post(
+  "/update-password",
+  [check("email", "Please include a valid email").isEmail()],
+  userController.updatePassword
+);
+
+router.post("/:userId", userController.changePassword);
+
 module.exports = router;
