@@ -14,6 +14,17 @@ const serviceDetailsSchema = mongoose.Schema({
     required: true,
     default: "open",
   },
+  paymentStatus: {
+    type: String,
+    required: true,
+    default: "unpaid",
+  },
+  transactionId: {
+    type: String,
+  },
+  receiptUrl: {
+    type: String,
+  },
   selectedDate: {
     type: Date,
     required: true,

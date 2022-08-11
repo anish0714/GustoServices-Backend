@@ -5,6 +5,7 @@ const categoryRoutes = require("./Category/routes");
 const vendorServiceRoutes = require("./VendorService/routes");
 const serviceDetailRoutes = require("./ServiceDetails/routes");
 const feedbackRoutes = require("./Feedback/routes");
+const paymentRoutes = require("./Payment/routes");
 
 module.exports = (app) => {
   //-------------------------------------USER---
@@ -15,4 +16,5 @@ module.exports = (app) => {
   app.use("/vendor/service", vendorServiceRoutes);
   app.use("/booking", serviceDetailRoutes);
   app.use("/feedback", feedbackRoutes);
+  app.use("/payment", paymentRoutes);
 };
