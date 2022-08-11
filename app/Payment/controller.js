@@ -132,21 +132,23 @@ exports.addCard = async (req, res) => {
 
 // fetch all customer cards
 exports.getAllCards = async (req, res) => {
-  stripe.customers.listSources(
-    req.params.customerId,
-    {
-      object: "card",
-      limit: 3,
-    },
-    (err, cards) => {
-      if (err && err.message) return res.send(err.message);
-      return res.status(200).json({
-        status: true,
-        statusCode: 1,
-        data: cards,
-      });
-    }
-  );
+  Payment.findOne({ userId: req.params.userId }, (err, payment) => {
+    stripe.customers.listSources(
+      payment.customerId,
+      {
+        object: "card",
+        limit: 3,
+      },
+      (err, cards) => {
+        if (err && err.message) return res.send(err.message);
+        return res.status(200).json({
+          status: true,
+          statusCode: 1,
+          data: cards,
+        });
+      }
+    );
+  });
 };
 
 // delete the card
