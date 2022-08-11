@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../../config/config");
 const sendEmail = require("../../config/email");
+const otpGenerator = require("otp-generator");
 
 // @type POST
 // @desc register a user
@@ -245,15 +246,27 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.updatePassword = async (req, res) => {
   try {
-    const user = await UserModel.findOne({ email: req.body.email });
-    // const link = `${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`;
-    const link = `http://localhost:4200/password-reset/${user._id}`;
-    await sendEmail(user.email, "Password reset", link);
-
-    res.status(200).json({
-      success: true,
-      message: "Reset link sent via mail",
+    let otp = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
     });
+
+    UserModel.updateOne(
+      { email: req.body.email },
+      { $set: { otp } },
+      async (err, user) => {
+        if (err) {
+          res.send(err);
+        }
+        await sendEmail(req.body.email, "Password reset", otp);
+        res.status(200).json({
+          success: true,
+          message: "Reset link sent via mail",
+        });
+      }
+    );
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -264,15 +277,22 @@ exports.updatePassword = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
   try {
-    const { password } = req.body;
+    const { password, otp } = req.body;
     if (!password) {
       res.send("New password not sent");
     }
     const user = await UserModel.findById(req.params.userId);
     if (!user) return res.status(400).send("invalid link or expired");
 
+    if (otp != user.otp) {
+      return res.status(400).json({
+        success: false,
+        data: "Incorrect otp",
+      });
+    }
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
+    user.otp = null;
     await user.save();
 
     res.status(200).json({

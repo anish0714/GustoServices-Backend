@@ -29,6 +29,9 @@ const userSchema = mongoose.Schema({
   organizationName: {
     type: String,
   },
+  otp: {
+    type: String,
+  },
   postalCode: {
     type: String,
   },
