@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const controller = require("./controller");
 
-router.get("/:customerId", controller.getAllCards);
+router.get("/:userId", controller.getAllCards);
 
 router.post("/accept-payment", controller.acceptPayment);
 router.post("/add-card", controller.addCard);

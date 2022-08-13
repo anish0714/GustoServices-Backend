@@ -56,10 +56,10 @@ const vendorServiceSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  serviceImage: {
-    type: String,
-    required: true,
-  },
+  // serviceImage: {
+  //   type: String,
+  //   required: true,
+  // },
 });
 
 const VendorService = mongoose.model("VendorService", vendorServiceSchema);

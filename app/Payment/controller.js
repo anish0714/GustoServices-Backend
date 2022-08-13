@@ -2,6 +2,7 @@ const Payment = require("./model");
 const ServiceDetails = require("../ServiceDetails/model");
 
 const stripe = require("stripe")(process.env.SECRET_KEY);
+var ObjectID = require('mongodb').ObjectId;
 
 // accept payment
 exports.acceptPayment = async (req, res) => {
@@ -14,17 +15,16 @@ exports.acceptPayment = async (req, res) => {
         customer: req.body.customerId,
         source: req.body.cardId,
       })
-      .then((charge) => {
+      .then(charge => {
         ServiceDetails.updateOne(
-          ({ _id: req.body.bookingId },
+          { _id: req.body.bookingId },
           {
             $set: {
               paymentStatus: "paid",
               transactionId: charge.balance_transaction,
               receiptUrl: charge.receipt_url,
             },
-          }),
-          (err, service) => {
+          }).exec((err, service) => {
             if (err) {
               res.send(err);
             }
@@ -33,8 +33,7 @@ exports.acceptPayment = async (req, res) => {
               statusCode: 1,
               data: charge,
             });
-          }
-        );
+          });
       })
       .catch((err) => {
         res.send(err); // If some error occurs
@@ -132,21 +131,29 @@ exports.addCard = async (req, res) => {
 
 // fetch all customer cards
 exports.getAllCards = async (req, res) => {
-  stripe.customers.listSources(
-    req.params.customerId,
-    {
-      object: "card",
-      limit: 3,
-    },
-    (err, cards) => {
-      if (err && err.message) return res.send(err.message);
+  Payment.findOne({ userId: req.params.userId }, (err, payment) => {
+    if (!payment) {
       return res.status(200).json({
         status: true,
-        statusCode: 1,
-        data: cards,
+        data: [],
       });
     }
-  );
+    stripe.customers.listSources(
+      payment.customerId,
+      {
+        object: "card",
+        limit: 3,
+      },
+      (err, cards) => {
+        if (err && err.message) return res.send(err.message);
+        return res.status(200).json({
+          status: true,
+          statusCode: 1,
+          data: cards,
+        });
+      }
+    );
+  });
 };
 
 // delete the card
